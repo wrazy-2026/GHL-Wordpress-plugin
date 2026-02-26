@@ -1,11 +1,13 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 
+# Install root deps (for workspaces/concurrently if needed)
+COPY package.json package-lock.json* ./
 # Install frontend deps and build
 COPY frontend/package.json frontend/package-lock.json* ./frontend/
-RUN cd frontend && npm install --no-audit --no-fund
+RUN npm install --no-audit --no-fund
 COPY frontend ./frontend
-RUN cd frontend && npm run build
+RUN npm run build --workspace=frontend
 
 FROM node:20-alpine
 WORKDIR /app

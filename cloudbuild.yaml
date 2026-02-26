@@ -1,7 +1,11 @@
 steps:
+  - name: 'bash'
+    args: ['echo', 'Starting build for $PROJECT_ID...']
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-t', 'gcr.io/$PROJECT_ID/ghl-exporter', '.']
 options:
-  logging: 'CLOUD_LOGGING_ONLY'
+  logging: 'GCS_ONLY' # Try switching to GCS (though it might fail if no bucket is set)
+  # If GCS fails, we will try NONE next in another commit
+timeout: '1200s'
 images:
   - 'gcr.io/$PROJECT_ID/ghl-exporter'
