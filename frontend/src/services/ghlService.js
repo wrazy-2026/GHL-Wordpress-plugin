@@ -12,26 +12,50 @@ export async function fetchGHLContent() {
     const results = []
 
     // Helper to format proper absolute URL
-    const buildUrl = (domainObj, step) => {
+    const buildUrl = (parent, step) => {
         let domain = ''
+        const domainObj = parent.domain || parent.selectedDomain || null
         if (typeof domainObj === 'string') domain = domainObj
-        else if (domainObj) domain = domainObj.url || domainObj.name || domainObj.domain || ''
+        else if (domainObj) domain = domainObj.url || domainObj.name || domainObj.domain || domainObj.domainName || ''
 
-        let stepUrl = step.url || step.canonicalUrl || step.liveUrl || step.canonicalLink || step.path || ''
-        if (stepUrl && !stepUrl.startsWith('http')) {
-            // Clean paths and add domain
-            if (domain) {
-                if (!domain.startsWith('http')) {
-                    stepUrl = 'https://' + domain + (stepUrl.startsWith('/') ? '' : '/') + stepUrl
-                } else {
-                    stepUrl = domain + (stepUrl.startsWith('/') ? '' : '/') + stepUrl
-                }
-            } else {
-                // If no domain is found, we fall back to a GHL preview link assuming app.gohighlevel.com format
-                stepUrl = 'https://app.gohighlevel.com' + (stepUrl.startsWith('/') ? '' : '/') + stepUrl;
+        // Heuristic: Extract domain from name if present in parentheses (common in GHL)
+        if (!domain && parent.name) {
+            const match = parent.name.match(/\(([^)]+)\)/)
+            if (match && match[1].includes('.')) {
+                domain = match[1]
             }
         }
-        return stepUrl
+
+        // Prioritize path/slug for construction
+        let path = step.path || step.slug || ''
+        let stepUrl = step.url || step.canonicalUrl || step.liveUrl || step.canonicalLink || ''
+
+        // If stepUrl is an internal GHL link, and we have a path, use the path instead
+        if (stepUrl.includes('app.gohighlevel.com') && path) {
+            stepUrl = path
+        }
+
+        if (stepUrl && !stepUrl.startsWith('http')) {
+            // It's a path
+            if (domain) {
+                const cleanDomain = domain.replace(/^https?:\/\//, '')
+                return `https://${cleanDomain}/${stepUrl.startsWith('/') ? stepUrl.substring(1) : stepUrl}`
+            } else {
+                // Fallback to preview link if no domain
+                return 'https://app.gohighlevel.com/v2/preview/path' + (stepUrl.startsWith('/') ? '' : '/') + stepUrl
+            }
+        }
+
+        // If it's already a full URL but we have a domain, and it's an internal link, swap the domain
+        if (stepUrl.startsWith('http') && stepUrl.includes('app.gohighlevel.com') && domain) {
+            try {
+                const urlObj = new URL(stepUrl)
+                const cleanDomain = domain.replace(/^https?:\/\//, '')
+                return `https://${cleanDomain}${urlObj.pathname}${urlObj.search}`
+            } catch (e) { /* ignore */ }
+        }
+
+        return stepUrl || path || ''
     }
 
     // 1. Fetch Funnels
@@ -48,7 +72,7 @@ export async function fetchGHLContent() {
                             id: step.id || step._id,
                             type: 'funnel_page',
                             title: `${f.name || f.title || 'Funnel'} > ${step.name || step.title || 'Page'}`,
-                            link: buildUrl(f.domain, step),
+                            link: buildUrl(f, step),
                             data: step
                         })
                     })
@@ -73,12 +97,12 @@ export async function fetchGHLContent() {
                             id: step.id || step._id,
                             type: 'website_page',
                             title: `${w.name || w.title || 'Website'} > ${step.name || step.title || 'Page'}`,
-                            link: buildUrl(w.domain, step),
+                            link: buildUrl(w, step),
                             data: step
                         })
                     })
                 } else {
-                    results.push({ id: w.id || w._id, type: 'website', title: w.name || w.title || 'Website', link: typeof w.domain === 'string' ? w.domain : (w.domain?.url || ''), data: w })
+                    results.push({ id: w.id || w._id, type: 'website', title: w.name || w.title || 'Website', link: buildUrl(w, { url: '/' }), data: w })
                 }
             })
         }
@@ -94,7 +118,7 @@ export async function fetchGHLContent() {
                 if (Array.isArray(postsArr)) {
                     postsArr.forEach(p => {
                         let link = p.canonicalLink || p.canonicalUrl || p.url || p.customUrl || ''
-                        if (!link && p.slug) link = buildUrl(blog.domain, { url: '/post/' + p.slug })
+                        if (!link && p.slug) link = buildUrl(blog, { url: '/post/' + p.slug })
                         results.push({ id: p._id || p.id, type: 'blog_post', title: p.title || p.name || 'Blog Post', link, data: p })
                     })
                 }
