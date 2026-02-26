@@ -1,10 +1,8 @@
 steps:
-  - name: 'bash'
-    args: ['echo', 'Starting build for $PROJECT_ID...']
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-t', 'gcr.io/$PROJECT_ID/ghl-exporter', '.']
 options:
-  logging: 'NONE'
+  logging: 'CLOUD_LOGGING_ONLY'
 timeout: '1200s'
 images:
   - 'gcr.io/$PROJECT_ID/ghl-exporter'
