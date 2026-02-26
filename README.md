@@ -1,53 +1,71 @@
 # GHL Exporter (Frontend + Local Server)
 
-This project is a local development scaffold for the GHL Exporter app.
+This project is a advanced development scaffold for the GHL Exporter app, bridging GoHighLevel content with WordPress exports via a secure local bridge.
 
-Overview:
-- Frontend: Vite + React + Tailwind UI (in `frontend/`).
-- Server: Express app (in `server/`) that forwards export requests to a configured webhook and receives webhook responses at `/webhook/receive`.
+## ✨ Key Features
 
-Quick start:
+- **🌐 GoHighLevel Integration:**
+  - Automated fetching of **Funnels, Websites, and Blog Posts** via GHL API.
+  - Intelligent URL construction that handles custom domains, GHL preview links, and canonical paths.
+  - Multi-version API support (v1 & v2 for Funnels/Websites).
+- **🔄 Local Webhook Bridge:**
+  - Express server acting as a proxy to forward export requests securely.
+  - Dedicated endpoint (`/webhook/receive`) to collect asynchronous responses from external WordPress systems.
+  - In-memory state tracking with frontend polling for a seamless export experience.
+- **🛠️ Developer-First Scaffold:**
+  - Vite-powered React frontend with Tailwind UI.
+  - Mono-repo structure with concurrent development scripts.
+  - Ready-to-deploy Docker configuration for Google Cloud Run.
 
-1. Install dependencies for both workspaces:
+## 🚀 Quick Start
 
+### 1. Installation
+Install dependencies for both the frontend and server workspaces:
 ```bash
 npm run install:all
 ```
 
-2. Start both frontend and server (development):
-
+### 2. Development
+Start both the frontend and server concurrently:
 ```bash
 npm run dev
 ```
 
-3. Open the frontend at `http://localhost:5173` (Vite default) and configure your GHL API key, Subaccount ID, and Export Webhook URL in the Integration tab.
+### 3. Configuration
+- Open the frontend at [http://localhost:5173](http://localhost:5173).
+- Head to the **Integration** tab to set your:
+  - **GHL API Key**
+  - **Subaccount ID**
+  - **Export Webhook URL** (The external system that processes the WordPress export).
 
-Notes on webhook flow:
-- The frontend sends an export request to the local server (`/api/export`) which forwards the payload to the configured `Export Webhook URL`.
-- Your webhook endpoint (the system that actually creates the WordPress post) should, after processing, POST a JSON payload containing `{ id, wordpressLink }` to `http://<your-machine>:4000/webhook/receive` so the local server stores the result.
-- The frontend polls `/api/responses?id=<id>` to receive the WordPress link and populate the table.
+---
 
-If you want the server accessible from the internet for webhook callbacks, use a tunneling tool such as `ngrok` and set the external webhook target accordingly.
+## ☁️ Deployment to Google Cloud (Cloud Run)
 
+This project is optimized to run as a single container serving both the React frontend and the Express bridge.
 
-Deploying to Google Cloud (Cloud Run)
-
-This project is set up to be deployed as a single container serving both frontend and server.
-
-1. Build and push the container with Cloud Build:
-
+### Phase 1: Build Image
+Build and push the container using Google Cloud Build:
 ```bash
 gcloud builds submit --config cloudbuild.yaml --substitutions=_IMAGE_NAME=ghl-exporter
 ```
 
-2. Deploy to Cloud Run (replace PROJECT and REGION as needed):
-
+### Phase 2: Deploy to Cloud Run
+Deploy the service (update `PROJECT_ID` as needed):
 ```bash
-gcloud run deploy ghl-exporter --image gcr.io/$GOOGLE_CLOUD_PROJECT/ghl-exporter --region us-central1 --platform managed --allow-unauthenticated --port 8080
+gcloud run deploy ghl-exporter \
+  --image gcr.io/$GOOGLE_CLOUD_PROJECT/ghl-exporter \
+  --region us-central1 \
+  --platform managed \
+  --allow-unauthenticated \
+  --port 8080
 ```
 
-3. After deployment, the Cloud Run service URL will serve the frontend and the server endpoints (`/api/*`, `/webhook/receive`). Use that URL as your webhook callback target.
+> [!NOTE] 
+> The Cloud Run service URL will serve both the frontend and the API endpoints (`/api/*`, `/webhook/receive`). Use the final service URL as your webhook callback target in external systems.
 
-Notes:
-- Ensure `gcloud` is authenticated and the project is selected: `gcloud auth login && gcloud config set project YOUR_PROJECT_ID`.
-- If you prefer separate services (frontend in Firebase Hosting, server in Cloud Run), let me know and I can create that configuration.
+## 🤝 Notes on Webhook Flow
+1. **Request:** Frontend (via `/api/export`) -> Local Server -> External Webhook (WordPress).
+2. **Process:** External Webhook processes the item (creates post).
+3. **Response:** External Webhook POSTs `{ id, wordpressLink }` back to `https://<your-deploy-url>/webhook/receive`.
+4. **Completion:** Frontend polls `/api/responses?id=<id>` to retrieve and display the live WordPress link.
