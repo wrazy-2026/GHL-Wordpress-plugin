@@ -1,0 +1,15 @@
+{
+    "name": "ghl-exporter-monorepo",
+    "private": true,
+    "workspaces": [
+        "frontend",
+        "server"
+    ],
+    "scripts": {
+        "install:all": "npm install --workspaces",
+        "dev": "concurrently \"npm --workspace frontend run dev\" \"npm --workspace server run dev\""
+    },
+    "devDependencies": {
+        "concurrently": "^8.0.1"
+    }
+}

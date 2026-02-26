@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    
+    <!-- Security Headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN" />
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+    
+    <link rel="icon" href="/favicon.ico?v=1.0.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="google-site-verification" content="DMtMdTh2XwcRc9VYjNDYSAsqGMAKUtNJuOxjvdMoOdM" />
+
+    <!-- Default meta tags (will be dynamically updated based on domain) -->
+    <title>App Marketplace | CRM Apps & Integrations</title>
+    <meta
+      name="description"
+      content="Discover and install powerful apps and integrations. Browse 1500+ apps to enhance your CRM, marketing automation, and business workflows."
+    />
+    <meta
+      name="keywords"
+      content="marketplace, apps, integrations, CRM, marketing automation, business tools, workflow automation"
+    />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Open Graph meta tags -->
+    <meta property="og:title" content="App Marketplace | CRM Apps & Integrations" />
+    <meta
+      property="og:description"
+      content="Discover and install powerful apps and integrations. Browse 1500+ apps to enhance your CRM, marketing automation, and business workflows."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="App Marketplace" />
+
+    <!-- Twitter Card meta tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="App Marketplace | CRM Apps & Integrations" />
+    <meta
+      name="twitter:description"
+      content="Discover and install powerful apps and integrations. Browse 1500+ apps to enhance your CRM, marketing automation, and business workflows."
+    />
+
+    <!-- Dynamic meta tag updater - runs after meta tags are defined -->
+    <script>
+      ;(function () {
+        const hostname = window.location.hostname
+        const isLeadConnector = hostname.includes('leadconnector')
+        const isGoHighLevel = hostname.includes('gohighlevel')
+        const isWhiteLabel = !isGoHighLevel && !isLeadConnector
+
+        let title, description, keywords, siteName
+
+        if (isLeadConnector) {
+          title = 'LeadConnector Marketplace | Apps & Integrations'
+          description =
+            'Discover and install powerful apps and integrations for LeadConnector. Browse 1500+ apps to enhance your CRM, marketing automation, and business workflows.'
+          keywords = 'LeadConnector, marketplace, apps, integrations, CRM, marketing automation, business tools'
+          siteName = 'LeadConnector Marketplace'
+        } else if (isGoHighLevel) {
+          title = 'GoHighLevel Marketplace | Apps & Integrations'
+          description =
+            'Discover and install powerful apps and integrations for GoHighLevel. Browse 1500+ apps to enhance your CRM, marketing automation, and business workflows.'
+          keywords = 'GoHighLevel, marketplace, apps, integrations, CRM, marketing automation, business tools'
+          siteName = 'GoHighLevel Marketplace'
+        } else {
+          // White-label instances
+          title = 'App Marketplace | CRM Apps & Integrations'
+          description =
+            'Discover and install powerful apps and integrations. Browse 1500+ apps to enhance your CRM, marketing automation, and business workflows.'
+          keywords = 'marketplace, apps, integrations, CRM, marketing automation, business tools, workflow automation'
+          siteName = 'App Marketplace'
+        }
+
+        // Set title
+        document.title = title
+
+        // Helper function to set meta tag content
+        function setMeta(selector, content) {
+          const meta = document.querySelector(selector)
+          if (meta) {
+            meta.setAttribute('content', content)
+          }
+        }
+
+        // Set all meta tags
+        setMeta('meta[name="description"]', description)
+        setMeta('meta[name="keywords"]', keywords)
+        setMeta('meta[property="og:title"]', title)
+        setMeta('meta[property="og:description"]', description)
+        setMeta('meta[property="og:site_name"]', siteName)
+        setMeta('meta[name="twitter:title"]', title)
+        setMeta('meta[name="twitter:description"]', description)
+      })()
+    </script>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <script type="module" crossorigin src="/assets/index.5911758d.js"></script>
+    <link rel="stylesheet" href="/assets/index.c9dec35f.css">
+  </head>
+  <body>
+    <div id="app"></div>
+    
+    <script>
+      !(function (w, d, i, s) {
+        function l() {
+          if (!d.getElementById(i)) {
+            var f = d.getElementsByTagName(s)[0],
+              e = d.createElement(s)
+            ;(e.type = 'text/javascript'),
+              (e.async = !0),
+              (e.src = 'https://canny.io/sdk.js'),
+              f.parentNode.insertBefore(e, f)
+          }
+        }
+        if ('function' != typeof w.Canny) {
+          var c = function () {
+            c.q.push(arguments)
+          }
+          ;(c.q = []),
+            (w.Canny = c),
+            'complete' === d.readyState
+              ? l()
+              : w.attachEvent
+              ? w.attachEvent('onload', l)
+              : w.addEventListener('load', l, !1)
+        }
+      })(window, document, 'canny-jssdk', 'script')
+      // Pendo install script injected
+      ;(function (apiKey) {
+        ;(function (p, e, n, d, o) {
+          var v, w, x, y, z
+          o = p[d] = p[d] || {}
+          o._q = o._q || []
+          v = ['initialize', 'identify', 'updateOptions', 'pageLoad', 'track']
+          for (w = 0, x = v.length; w < x; ++w)
+            (function (m) {
+              o[m] =
+                o[m] ||
+                function () {
+                  o._q[m === v[0] ? 'unshift' : 'push']([m].concat([].slice.call(arguments, 0)))
+                }
+            })(v[w])
+          y = e.createElement(n)
+          y.async = !0
+          y.src = 'https://cdn.pendo.io/agent/static/' + apiKey + '/pendo.js'
+          z = e.getElementsByTagName(n)[0]
+          z.parentNode.insertBefore(y, z)
+        })(window, document, 'script', 'pendo')
+      })('c8f5a3d1-3b7c-48f9-bf79-fecfd3eb514d')
+    </script>
+    <!-- Login with Google -->
+    <script src="https://accounts.google.com/gsi/client" async></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-7WR7KWXYT8"></script>
+    <script>
+      window.dataLayer = window.dataLayer || []
+      function gtag() {
+        dataLayer.push(arguments)
+      }
+      gtag('js', new Date())
+
+      gtag('config', 'G-7WR7KWXYT8')
+    </script>
+  </body>
+</html>
