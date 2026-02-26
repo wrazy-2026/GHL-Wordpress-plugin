@@ -4,8 +4,7 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-t', 'gcr.io/$PROJECT_ID/ghl-exporter', '.']
 options:
-  logging: 'GCS_ONLY' # Try switching to GCS (though it might fail if no bucket is set)
-  # If GCS fails, we will try NONE next in another commit
+  logging: 'CLOUD_LOGGING_ONLY'
 timeout: '1200s'
 images:
   - 'gcr.io/$PROJECT_ID/ghl-exporter'
